@@ -30,70 +30,70 @@ void loop() {
 int tempcalib=0;
 switch(balanced){
 case 0:
-if(servos[0].read != 85){
-if(servos[0].read > 85){
-tempcalib = servos[0].read;
-servos.write(tempcalib+1);
-}if(servos[0].read < 85){
-servos.write(tempcalib-1);
+if(servos[0].read() != 85){
+if(servos[0].read() > 85){
+tempcalib = servos[0].read();
+servos[0].write(tempcalib+1);
+}if(servos[0].read() < 85){
+servos[0].write(tempcalib-1);
 }
 delay(10);
-}if(servos[0].read == 85){balanced=1;}
+}if(servos[0].read() == 85){balanced=1;}
 break;
 case 1:
-if(servos[1].read != 110){
-if(servos[1].read > 110){
-tempcalib = servos[1].read;
-servos.write(tempcalib+1);
-}if(servos[1].read < 110){
-servos.write(tempcalib-1);
+if(servos[1].read() != 110){
+if(servos[1].read() > 110){
+tempcalib = servos[1].read();
+servos[1].write(tempcalib+1);
+}if(servos[1].read() < 110){
+servos[1].write(tempcalib-1);
 }
 delay(10);
-}if(servos[1].read == 110){balanced=2;}
+}if(servos[1].read() == 110){balanced=2;}
 break;
 case 2:
-if(servos[2].read != 55){
-if(servos[2].read > 55){
-tempcalib = servos[2].read;
-servos.write(tempcalib+1);
-}if(servos[2].read < 55){
-servos.write(tempcalib-1);
+if(servos[2].read() != 55){
+if(servos[2].read() > 55){
+tempcalib = servos[2].read();
+servos[2].write(tempcalib+1);
+}if(servos[2].read() < 55){
+servos[2].write(tempcalib-1);
 }
 delay(10);
-}if(servos[2].read == 55){balanced=3;}
+}if(servos[2].read() == 55){balanced=3;}
 break;
 case 3:
-if(servos[3].read != 15){
-if(servos[3].read > 15){
-tempcalib = servos[3].read;
-servos.write(tempcalib+1);
-}if(servos[3].read < 15){
-servos.write(tempcalib-1);
+if(servos[3].read() != 15){
+if(servos[3].read() > 15){
+tempcalib = servos[3].read();
+servos[3].write(tempcalib+1);
+}if(servos[3].read() < 15){
+servos[3].write(tempcalib-1);
 }
 delay(10);
-}if(servos[3].read == 15){balanced=4;}
+}if(servos[3].read() == 15){balanced=4;}
 break;
 case 4:
-if(servos[4].read != 0){
-if(servos[4].read > 0){
-tempcalib = servos[4].read;
-servos.write(tempcalib+1);
-}if(servos[4].read < 0){
-servos.write(tempcalib-1);
+if(servos[4].read() != 0){
+if(servos[4].read() > 0){
+tempcalib = servos[4].read();
+servos[4].write(tempcalib+1);
+}if(servos[4].read() < 0){
+servos[4].write(tempcalib-1);
 }
 delay(10);
-}if(servos[4].read == 0){balanced=5;}
+}if(servos[4].read() == 0){balanced=5;}
 break;
 case 5:
-if(servos[5].read != 125){
-if(servos[5].read > 125){
-tempcalib = servos[5].read;
-servos.write(tempcalib+1);
-}if(servos[5].read < 125){
-servos.write(tempcalib-1);
+if(servos[5].read() != 125){
+if(servos[5].read() > 125){
+tempcalib = servos[5].read();
+servos[5].write(tempcalib+1);
+}if(servos[5].read() < 125){
+servos[5].write(tempcalib-1);
 }
 delay(10);
-}if(servos[5].read == 125){balanced=6;}//DONE
+}if(servos[5].read() == 125){balanced=6;}//DONE
 break;
 
 

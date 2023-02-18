@@ -2,8 +2,14 @@
 #include <Servo.h>
 
 Servo servos[6];  // create servo object to control a servo
+String commss[20];
 bool isDone = true;
+bool isReading = false;
+bool quingReset = false;
 int counter = 0;
+int ei = 0;
+int ei_cur = 1;
+int ei_cur_dvach = 0;
 int angl = 0;
 int spid = 0;
 String command = "0";
@@ -15,7 +21,7 @@ for(int i = 0; i < 5; i++){
 }
 
 Serial.begin(9600);
-Serial.println("Command list: ");
+//Serial.println("Command list: ");
 }
 
 void loop() {
@@ -23,25 +29,50 @@ void loop() {
 while (Serial.available() > 0 && isDone == true) {
 
     command = Serial.readString();
-	//byte indoks = command.indexOf(' ');
-	byte indoks = command.indexOf(' ');
-	byte indoks2 = command.indexOf(' ', indoks + 1);
-	byte indoks3 = command.indexOf(' ', indoks2 + 1);
-	String b1 = command.substring(0, indoks);
-	String b2 = command.substring(indoks, indoks2);
-	String b3 = command.substring(indoks2, indoks3);
-
-	com_rip = b1;
-	angl = b2.toInt();
-	spid = b3.toInt();
+	if(command=="start"){ isReading=true;ei_cur=0;quingReset=false;Serial.print("Now you can write commands");Serial.print("\n");}
+	if(command=="end"){ isReading=false;ei_cur=0;quingReset=true;Serial.print("Manipulating now");Serial.print("\n");}
+	if(command!="start" && command !="end"){
+			if(isReading==false){
+			Serial.print("Didn\'t I do it for you?");
+			Serial.print("\n");
+			}
+			if(isReading==true){
+			commss[ei] = command;
+			ei++;
+			if(ei >= 20){
+			isReading==false;
+			ei_cur=0;
+			quingReset=true;
+			}
+			}
+		}
+ 	 }
+	if(isDone&&isReading==false&&quingReset==true){
 	
-	isDone=false;
-  }
-doSomething(com_rip, angl, spid);
+		if(ei_cur<ei){
+		isDone=false;
+			byte indoks = commss[ei_cur].indexOf(' ');
+			byte indoks2 = commss[ei_cur].indexOf(' ', indoks + 1);
+			byte indoks3 = commss[ei_cur].indexOf(' ', indoks2 + 1);
+			String b1 = commss[ei_cur].substring(0, indoks);
+			String b2 = commss[ei_cur].substring(indoks, indoks2);
+			String b3 = commss[ei_cur].substring(indoks2, indoks3);
+			Serial.print("GAY SHIT");
+			com_rip = b1;
+			angl = b2.toInt();
+			spid = b3.toInt();
+	
+			isDone=false;
+			
+		}
+		ei_cur++;
+		if(ei_cur>=ei){quingReset=false;}
+	}	
+	doSomething(com_rip, angl, spid);	
 }
 
 void doSomething(String com, int angle, int speed){
-if (isDone==false){
+if (isDone==false&&isReading==false){
 	int com_mod = 1;
 	//Serial.print("Goin on "); Serial.print(com ); Serial.println(" mode!");
 	if(com == "bend_1"){com_mod=0;/*наклон захвата*/}
@@ -105,6 +136,6 @@ if (isDone==false){
 	isDone=true;
 	}
 	delay(curdelay);
-}else{Serial.print("fuf");delay(speed*5);return;}
+}else{/*Serial.print(ei);*/delay(50);return;}
 
 }

@@ -7,6 +7,7 @@ bool isDone = true;
 bool isReading = false;
 bool quingReset = false;
 int counter = 0;
+int balanced = 0;
 int ei = 0;
 int ei_cur = 1;
 int ei_cur_dvach = 0;
@@ -21,16 +22,93 @@ for(int i = 0; i < 5; i++){
 }
 
 Serial.begin(9600);
-//Serial.println("Command list: ");
+Serial.println("Waiting for the default pos.\n");
+
 }
 
 void loop() {
+int tempcalib=0;
+switch(balanced){
+case 0:
+if(servos[0].read != 85){
+if(servos[0].read > 85){
+tempcalib = servos[0].read;
+servos.write(tempcalib+1);
+}if(servos[0].read < 85){
+servos.write(tempcalib-1);
+}
+delay(10);
+}if(servos[0].read == 85){balanced=1;}
+break;
+case 1:
+if(servos[1].read != 110){
+if(servos[1].read > 110){
+tempcalib = servos[1].read;
+servos.write(tempcalib+1);
+}if(servos[1].read < 110){
+servos.write(tempcalib-1);
+}
+delay(10);
+}if(servos[1].read == 110){balanced=2;}
+break;
+case 2:
+if(servos[2].read != 55){
+if(servos[2].read > 55){
+tempcalib = servos[2].read;
+servos.write(tempcalib+1);
+}if(servos[2].read < 55){
+servos.write(tempcalib-1);
+}
+delay(10);
+}if(servos[2].read == 55){balanced=3;}
+break;
+case 3:
+if(servos[3].read != 15){
+if(servos[3].read > 15){
+tempcalib = servos[3].read;
+servos.write(tempcalib+1);
+}if(servos[3].read < 15){
+servos.write(tempcalib-1);
+}
+delay(10);
+}if(servos[3].read == 15){balanced=4;}
+break;
+case 4:
+if(servos[4].read != 0){
+if(servos[4].read > 0){
+tempcalib = servos[4].read;
+servos.write(tempcalib+1);
+}if(servos[4].read < 0){
+servos.write(tempcalib-1);
+}
+delay(10);
+}if(servos[4].read == 0){balanced=5;}
+break;
+case 5:
+if(servos[5].read != 125){
+if(servos[5].read > 125){
+tempcalib = servos[5].read;
+servos.write(tempcalib+1);
+}if(servos[5].read < 125){
+servos.write(tempcalib-1);
+}
+delay(10);
+}if(servos[5].read == 125){balanced=6;}//DONE
+break;
+
+
+default:
+
+break;
+}
+
 //String command = "x";
 while (Serial.available() > 0 && isDone == true) {
 
     command = Serial.readString();
 	if(command=="start"){ isReading=true;ei_cur=0;quingReset=false;Serial.print("Now you can write commands");Serial.print("\n");}
 	if(command=="end"){ isReading=false;ei_cur=0;quingReset=true;Serial.print("Manipulating now");Serial.print("\n");}
+	if(command=="calibrate"){ balanced=0;Serial.print("Calibrate now");Serial.print("\n");}
 	if(command!="start" && command !="end"){
 			if(isReading==false){
 			Serial.print("Didn\'t I do it for you?");

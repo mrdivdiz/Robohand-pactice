@@ -172,6 +172,7 @@ void loop() {
               }
            }
     }
+    runCom();
     if(commandl[3]!=null){Serial.println("Running...");}
 }
 
@@ -190,15 +191,6 @@ if(commandl[i] == "bend"){
         foott[i].write(def_angle);
       }
     }
-    else if(commandl[i] == "masspel"){
-    int angle = divide_string(serial_string, 2).toInt();
-    pel_mass_rotate(angle, 9);
-    }
-    else if(commandl[i] == "pel"){
-      int leg_num = divide_string(serial_string, 2).toInt();
-      int angle = divide_string(serial_string, 3).toInt();
-      pel_rotate(leg_num, angle, 9);
-    }
       else if(commandl[i] == "step") {
         int steps = divide_string(serial_string, 2).toInt();
         mk_step(steps);
@@ -207,6 +199,19 @@ if(commandl[i] == "bend"){
         init_pos();
       }
     }
+    if(commandl[i] == "pel"){
+      int leg_num = divide_string(serial_string, 2).toInt();
+      int angle = divide_string(serial_string, 3).toInt();
+      pel_rotate(leg_num, angle, 9);
+    }
+    if(commandl[i] == "masspel"){
+    int angle = divide_string(serial_string, 2).toInt();
+    pel_mass_rotate(angle, 9);
+    }
+    }
+    for(int k = 0; k < 4; k++){
+    commandl[k]=null;
+    commandc[k]=null;
     }
     Serial.println("Done.");
   }

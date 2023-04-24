@@ -10,7 +10,11 @@ int commandc[4];
 
 void setup() {
  Serial.begin(115200);
- Serial.println("Pls entr 4 comms2run");
+ Serial.println("Pls entr 4 comms2run: step or masspel");
+ for(int k = 0; k < 4; k++){
+    commandl[k]="nulb";
+    commandc[k]="0";
+    }
  for(int i = 0; i < 12; i++){
   if(i < num_legs){
     pelvic[i].attach(first_workfull_pin+i);
@@ -75,7 +79,7 @@ void init_pos() {
   bend_leg(3, 10, 9);
 }
 
-void step_programm() {
+void mk_step() {
   if(pelvic[0].read() == pelvic[1].read()) init_pos();
   bend_leg(1, 40, 9);
   bend_leg(3, -20, 9);
@@ -161,57 +165,78 @@ for(int i = 0; i < abs(angle); i++){
   }
 }
 
+String divide_string(String str_in, int part){
+  String out, str=str_in;
+  byte div_ind = str.indexOf(' ');
+  for(int i=0; i<part; i++){
+    out = str.substring(0, div_ind);
+    str = str.substring(div_ind+1);
+    div_ind = str.indexOf(' ');
+  }
+  return out;
+}
+
+
 void loop() {
   if (Serial.available()>0){
-    serial_string = Serial.readString();
+   String serial_string = Serial.readString();
     for(int i = 0; i < 4; i++){
-      if(commandl[i] == null){
+      if(commandl[i] == "nulb"){
     commandl[i] = divide_string(serial_string, 1);
-    commandc[i] = divide_string(serial_string, 2);
+    commandc[i] = divide_string(serial_string, 2).toInt();
     break;
               }
            }
     }
     runCom();
-    if(commandl[3]!=null){Serial.println("Running...");}
+    if(commandl[3]!="nulb"){Serial.println("Running...");}
 }
 
 void runCom(){
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < commandc[i];j++){
-if(commandl[i] == "bend"){
-      int leg_num = divide_string(serial_string, 2).toInt();
-      int angle = divide_string(serial_string, 3).toInt();
-      bend_leg(leg_num, angle, 9);
-    }
-    else if(commandl[i] == "alldef"){
+    if(commandl[i] == "alldef"){
       for(int i = 0; i < num_legs; i++){
         pelvic[i].write(def_angle);
         knee[i].write(def_angle);
-        foott[i].write(def_angle);
+        foot[i].write(def_angle);
       }
     }
       else if(commandl[i] == "step") {
-        int steps = divide_string(serial_string, 2).toInt();
-        mk_step(steps);
+        mk_step();
       }
       else if(commandl[i] == "init") {
         init_pos();
       }
     }
-    if(commandl[i] == "pel"){
-      int leg_num = divide_string(serial_string, 2).toInt();
-      int angle = divide_string(serial_string, 3).toInt();
-      pel_rotate(leg_num, angle, 9);
-    }
     if(commandl[i] == "masspel"){
-    int angle = divide_string(serial_string, 2).toInt();
-    pel_mass_rotate(angle, 9);
+    pel_mass_rotate(commandc[i], 9);
     }
     }
     for(int k = 0; k < 4; k++){
-    commandl[k]=null;
-    commandc[k]=null;
+    commandl[k]="nulb";
+    commandc[k]="0";
     }
     Serial.println("Done.");
   }
+
+void smooth_move(Servo servo, int angle, int spd){
+int curr_angle = servo.read();
+int diff = curr_angle-angle;
+for(int i = 0; i < abs(diff); i++){
+  if(curr_angle < angle) servo.write(curr_angle+i);
+  else servo.write(curr_angle-i);
+  delay((10-spd)*10);
+  }
+}
+
+void pel_mass_rotate(int angle, int spd){
+  int j = 1;
+  if (angle < 0) j = -1;
+for(int i = 0; i < abs(angle); i++){
+  for(int leg = 1; leg < 5; leg++){
+    pel_rotate(leg, j, 10);
+  }
+  delay((10-spd)*10);
+  }
+}
